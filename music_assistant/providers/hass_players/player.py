@@ -289,6 +289,10 @@ class HomeAssistantPlayer(Player):
             # tell esphome mediaproxy to bypass the proxy,
             # as MA already delivers an optimized stream
             extra_data["bypass_proxy"] = True
+        if media.image_url and self.extra_data.get("hass_domain") != "cast":
+            # integrations such as dlna_dmr read the artwork from `thumb`, not the cast metadata;
+            # cast would turn `thumb` into a second copy of the image it already gets
+            extra_data["thumb"] = media.image_url
 
         # stop the player if it is already playing
         if self._attr_playback_state == PlaybackState.PLAYING:
